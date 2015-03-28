@@ -1,6 +1,6 @@
-*
-*	spa.chat.js
-*	Chat feature module for SPA
+/*
+*	spa.model.js
+*	Model module
 */
 
 /* jslint 	browser : true, continue : true,
@@ -11,3 +11,5 @@
 */
 
 /*global $, spa */
+
+spa.model = (function () { return {}; } ());

@@ -17,15 +17,15 @@ spa.chat = (function () {
 	//---------BEGIN MODULE SCOPE VARIABLES--------------------//
 	var
 		configMap = {
-			main_html = String()
+			main_html : String()
 				+ '<div style="padding:1em; color:#fff;">'
 				+ 'Say hello to chat'
 				+ '</div>',
-			settable_map = {}
+			settable_map : {}
 		},
 
 		stateMap = { container : null },
-		jqueryMap = {}
+		jqueryMap = {},
 
 		setJqueryMap, configModule, initModule
 		;
@@ -58,7 +58,7 @@ spa.chat = (function () {
 	// Throws				: none
 	//
 	configModule = function ( input_map ) {
-		spa.util.setConfigMap( {
+			spa.util.setConfigMap( {
 			input_map				: input_map,
 			settable_map		: configMap.settable_map,
 			config_map			: configMap

@@ -31,7 +31,7 @@ spa.util = (function () {
 	//
 	makeError = function ( name_text, msg_text, data ) {
 		var error = new Error();
-		error.name = name_text:
+		error.name = name_text;
 		error.message = msg_text;
 
 		if ( data ) {error.data = data; }
@@ -54,7 +54,7 @@ spa.util = (function () {
 			input_map 		= arg_map.input_map,
 			settable_map	= arg_map.settable_map,
 			config_map		= arg_map.config_map,
-			key_name, error
+			key_name, error;
 
 		for ( key_name in input_map ) {
 			if ( input_map.hasOwnProperty (key_name) ) {
