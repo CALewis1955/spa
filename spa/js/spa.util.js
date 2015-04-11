@@ -76,4 +76,5 @@ spa.util = (function () {
 		makeError			: makeError,
 		setConfigMap	: setConfigMap
 	};
+
 } ());

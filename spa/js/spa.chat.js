@@ -24,9 +24,9 @@ spa.chat = (function () {
 						+ '<div class="spa-chat-head-title">'
 							+ 'Chat'
 						+ '</div>'	
-						+ '<div class="spa-chat-closer">x</div>'
-				+ '</div>'
-				+ '<div class="spa-chat-sizer">'
+					+ '</div>'	
+					+ '<div class="spa-chat-closer">x</div>'
+					+ '<div class="spa-chat-sizer">'
 					+ '<div class="spa-chat-msgs"></div>'
 					+ '<div class="spa-chat-box">'
 						+ '<input type="text"/>'
@@ -42,6 +42,8 @@ spa.chat = (function () {
 				slider_closed_em			: true,
 				slider_opened_title		: true,
 				slider_closed_title		: true,
+				slider_opened_min_em	: 10,
+				window_height_min_em	: 20,
 
 				chat_model					: true,
 				people_model				: true,
@@ -110,10 +112,15 @@ spa.chat = (function () {
 
 	// Begin DOM method /setPxSizes/
 	setPxSizes = function () {
-		var px_per_em, opened_height_em;
+		var px_per_em, window_height_em, opened_height_em;
 		px_per_em = getEmSize( jqueryMap.$slider.get(0) );
-
-		opened_height_em = configMap.slider_opened_em;
+		window_height_em = Math.floor(
+			( $(window).height() / px_per_em ) + 0.5
+			);
+		opened_height_em
+			= window_height_em > configMap.window_height_min_em
+			? configMap.slider_opened_em
+			: configMap.slider_opened_min_em;
 
 		stateMap.px_per_em = px_per_em;
 		stateMap.slider_closed_px = configMap.slider_closed_em * px_per_em;
@@ -207,6 +214,32 @@ spa.chat = (function () {
 	//----------------END EVENT HANDLERS--------------------------//
 
 	//----------------BEGIN PUBLIC METHODS-------------------------//
+	// Begin public method /handleResize/
+	// Purpose			:
+	// 	Given a window resize event, adjust the presentation
+	//  provided by this module if needed
+	// Actions    	:
+	//	If the window height or width falls below
+	//	a given threshol, resize the chat slider for
+	//  the reduced window size.
+	// returns: Boolean
+	//	* false  -resize not considered
+	//  * true   - resize considered
+	//  Throws: none
+	//
+	handleResize = function () {
+		// don't do anything if we don't have a slider container
+		if ( ! jqueryMap.$slider ) {return false; }
+
+		setPxSizes();
+		if ( stateMap.position_type === 'opened' ) {
+			jqueryMap.$slider.css( {height : stateMap.slider_opened_px} );
+		}
+		return true;
+	};
+	// End public method /handleResize
+
+
 	// Begin public method /configModule/
 	// Example			: spa.chat.configModule ({ slider_open_em : 18 });
 	// Purpose			: Configure the module prior to initialization
