@@ -16,7 +16,7 @@
 
 /*global $, spa, getComputedStyle */
 
-spa.util.b = (function () {
+spa.util_b = (function () {
 	'use strict';
 
 	//---------BEGIN MODULE SCOPE VARIABLES--------------------//

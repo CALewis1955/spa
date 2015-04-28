@@ -4,7 +4,7 @@
 */
 
 /** Begin reset */
-*{
+* {
 	margin: 0;
 	padding: 0;
 	-webkit-box-sizing: border-box;
@@ -14,6 +14,31 @@
 
 h1,h2,h3,h4,h5,h6,p {margin-bottom: 6pt; }
 ol,ul,dl {list-style-position: inside;}
+
+* {
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+-o-user-select: none;
+user-select: none; 
+-ktml-user-select: none;
+
+-webkit-user-drag: none;
+-moz-user-drag: none;
+user-drag: none;
+
+-webkit-tap-highlight-color : transparent;
+-webkit-touch-callout       : none;
+}
+
+input, textarea, .spa-x-user-select {
+	-webkit-user-select: text;
+	-ktml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	-o-user-select: text;
+	user-select: text;
+}
 /** end reset **/
 
 /** Begin standard selectors **/

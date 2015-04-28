@@ -22,10 +22,12 @@ spa.shell = (function () {
     	resize_interval	: 200,
     	main_html : String()
    	  	+ '<div class="spa-shell-head">'
-		  	+ '<div class="spa-shell-head-logo"></div>'
-		  	+ '<div class="spa-shell-head-acct"></div>'
-		  	+ '<div class="spa-shell-head-search"></div>'
-		  	+ '</div>'
+		  		+ '<div class="spa-shell-head-logo">'
+		  			+ '<h1>SPA</h1>'
+		  			+ '<p>javascript end to end</p>'
+		  		+ '</div>'	
+		  		+ '<div class="spa-shell-head-acct"></div>'
+		   	+ '</div>'
 		  	+ '<div class="spa-shell-main">'
 	  	  + '<div class="spa-shell-main-nav"></div>'
 	  	  + '<div class="spa-shell-main-content"></div>'
@@ -48,7 +50,9 @@ spa.shell = (function () {
     jqueryMap = {},
 
     copyAnchorMap, setJqueryMap, 
-    changeAnchorPart, onHashchange, onResize, onClickChat,
+    changeAnchorPart, onHashchange,
+    onTapAcct, onLogin, onLogout,
+      onClickChat,  onResize,
      setChatAnchor, initModule;
     //---------------END MODULE SCOPE VARIABLES------------------------//
 
@@ -127,9 +131,15 @@ changeAnchorPart = function ( arg_map ) {
 // Begin  DOM method /setJqueryMap/
 setJqueryMap = function(){
 	var $container = stateMap.$container;
-	jqueryMap = { $container : $container };
+	jqueryMap = {
+	 $container : $container,
+	 $acct 			: $container.find('.spa-shell-head-acct'),
+	 $nav 			: $container.find('.spa-shell-main-nav') 
+	};
 };
 // End DOM method /setJqueryMap/
+
+
 
 // Begin DOM method /toggleChat/
 // Purpose : Extends or retracts chat slider
@@ -162,6 +172,27 @@ setJqueryMap = function(){
 			configMap.resize_interval
 			);
 		return true;
+	};
+
+	onTapAcct = function (event) {
+		var acct_text, user_name, user = spa.model.people.get_user();
+		if (user.get_is_anon()) {
+			user_name = prompt('Please sign in');
+			spa.model.people.login(user_name);
+			jqueryMap.$acct.text('...processing...');
+		}
+		else {
+			spa.model.people.logout();
+		}
+		return false;
+	};
+
+	onLogin = function (event, login_user) {
+		jqueryMap.$acct.text(login_user.name);
+	};
+
+	onLogout = function (event, logout_user) {
+		jqueryMap.$acct.text('Please sign in');
 	};
 	// End Event handler /onResize/
 
@@ -277,6 +308,14 @@ initModule = function ( $container) {
 	$container.html(configMap.main_html);
 	setJqueryMap();
 
+
+jqueryMap.$acct
+	.text('Please sign in')
+	.bind('utap', onTapAcct);
+
+$.gevent.subscribe($container, 'spa-login', onLogin);
+$.gevent.subscribe($container, 'spa-logout', onLogout);
+	
 		
 	// configure uriAnchor to use our schema
 	$.uriAnchor.configModule ({
@@ -286,10 +325,18 @@ initModule = function ( $container) {
 	// configure and initialize feature modules
 	spa.chat.configModule( {
 		set_chat_anchor	: setChatAnchor,
-		chat_model			: spa.model_chat,
+		chat_model			: spa.model.chat,
 		people_model		: spa.model.people 
 	} );
 	spa.chat.initModule (jqueryMap.$container);
+
+	spa.avtr.configModule({
+		chat_model : spa.model.chat,
+		people_model : spa.model.people
+	});
+	spa.avtr.initModule(jqueryMap.$nav);
+
+		
 	// Handle URI anchor change events.
 	// This is done /after/ all feature modules are configured
 	// and initialized, otherwise they will not be ready to handle
@@ -300,14 +347,13 @@ initModule = function ( $container) {
 		.bind ('resize', onResize)
 		.bind( 'hashchange', onHashchange )
 		.trigger( 'hashchange' );
-};	
-	// test toggle
-	// setTimeout ( function() {toggleChat(true);}, 3000);
-	// setTimeout (function() {toggleChat(false);}, 8000);
-	
-// End Public method /initModule/
+};
+
 
 return { initModule : initModule };
+
+
+// End Public method /initModule/
 //--------------------------END PUBLIC METHODS----------------------------------//
 }());  
 
